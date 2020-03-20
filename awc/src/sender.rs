@@ -181,7 +181,8 @@ impl RequestSender {
     where
         B: Into<Body>,
     {
-        let mut connector = config.connector.borrow_mut();
+        let mut connector = config.connector.lock()
+            .unwrap();
 
         let fut = match self {
             RequestSender::Owned(head) => {

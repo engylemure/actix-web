@@ -10,6 +10,7 @@ use actix_service::Service;
 
 use crate::connect::{Connect, ConnectorWrapper};
 use crate::{Client, ClientConfig};
+use std::sync::{Arc, Mutex};
 
 /// An HTTP Client builder
 ///
@@ -24,7 +25,7 @@ pub struct ClientBuilder {
     conn_window_size: Option<u32>,
     headers: HeaderMap,
     timeout: Option<Duration>,
-    connector: Option<RefCell<Box<dyn Connect>>>,
+    connector: Option<Mutex<Box<dyn Connect>>>,
 }
 
 impl Default for ClientBuilder {
@@ -56,7 +57,7 @@ impl ClientBuilder {
         <T::Response as Connection>::Future: 'static,
         T::Future: 'static,
     {
-        self.connector = Some(RefCell::new(Box::new(ConnectorWrapper(connector))));
+        self.connector = Some(Mutex::new(Box::new(ConnectorWrapper(connector))));
         self
     }
 
@@ -182,7 +183,7 @@ impl ClientBuilder {
             if let Some(val) = self.stream_window_size {
                 connector = connector.initial_window_size(val)
             };
-            RefCell::new(
+            Mutex::new(
                 Box::new(ConnectorWrapper(connector.finish())) as Box<dyn Connect>
             )
         };
@@ -191,7 +192,7 @@ impl ClientBuilder {
             timeout: self.timeout,
             connector,
         };
-        Client(Rc::new(config))
+        Client(Arc::new(config))
     }
 }
 

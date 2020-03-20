@@ -22,6 +22,7 @@ use crate::error::{FreezeRequestError, InvalidUrl};
 use crate::frozen::FrozenClientRequest;
 use crate::sender::{PrepForSendingError, RequestSender, SendClientRequest};
 use crate::ClientConfig;
+use std::sync::Arc;
 
 #[cfg(any(feature = "flate2-zlib", feature = "flate2-rust"))]
 const HTTPS_ENCODING: &str = "br, gzip, deflate";
@@ -57,12 +58,12 @@ pub struct ClientRequest {
     cookies: Option<CookieJar>,
     response_decompress: bool,
     timeout: Option<Duration>,
-    config: Rc<ClientConfig>,
+    config: Arc<ClientConfig>,
 }
 
 impl ClientRequest {
     /// Create new client request builder.
-    pub(crate) fn new<U>(method: Method, uri: U, config: Rc<ClientConfig>) -> Self
+    pub(crate) fn new<U>(method: Method, uri: U, config: Arc<ClientConfig>) -> Self
     where
         Uri: TryFrom<U>,
         <Uri as TryFrom<U>>::Error: Into<HttpError>,

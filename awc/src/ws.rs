@@ -24,6 +24,7 @@ use crate::http::{
 };
 use crate::response::ClientResponse;
 use crate::ClientConfig;
+use std::sync::Arc;
 
 /// `WebSocket` connection
 pub struct WebsocketsRequest {
@@ -35,12 +36,12 @@ pub struct WebsocketsRequest {
     max_size: usize,
     server_mode: bool,
     cookies: Option<CookieJar>,
-    config: Rc<ClientConfig>,
+    config: Arc<ClientConfig>,
 }
 
 impl WebsocketsRequest {
     /// Create new websocket connection
-    pub(crate) fn new<U>(uri: U, config: Rc<ClientConfig>) -> Self
+    pub(crate) fn new<U>(uri: U, config: Arc<ClientConfig>) -> Self
     where
         Uri: TryFrom<U>,
         <Uri as TryFrom<U>>::Error: Into<HttpError>,
@@ -297,7 +298,8 @@ impl WebsocketsRequest {
         let fut = self
             .config
             .connector
-            .borrow_mut()
+            .lock()
+            .unwrap()
             .open_tunnel(head, self.addr);
 
         // set request timeout

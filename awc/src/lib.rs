@@ -51,6 +51,7 @@ pub use self::response::{ClientResponse, JsonBody, MessageBody};
 pub use self::sender::SendClientRequest;
 
 use self::connect::{Connect, ConnectorWrapper};
+use std::sync::{Arc, Mutex};
 
 /// An HTTP Client
 ///
@@ -70,18 +71,18 @@ use self::connect::{Connect, ConnectorWrapper};
 /// }
 /// ```
 #[derive(Clone)]
-pub struct Client(Rc<ClientConfig>);
+pub struct Client(Arc<ClientConfig>);
 
 pub(crate) struct ClientConfig {
-    pub(crate) connector: RefCell<Box<dyn Connect>>,
+    pub(crate) connector: Mutex<Box<dyn Connect>>,
     pub(crate) headers: HeaderMap,
     pub(crate) timeout: Option<Duration>,
 }
 
 impl Default for Client {
     fn default() -> Self {
-        Client(Rc::new(ClientConfig {
-            connector: RefCell::new(Box::new(ConnectorWrapper(
+        Client(Arc::new(ClientConfig {
+            connector: Mutex::new(Box::new(ConnectorWrapper(
                 Connector::new().finish(),
             ))),
             headers: HeaderMap::new(),

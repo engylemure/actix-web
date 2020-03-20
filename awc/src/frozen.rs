@@ -14,6 +14,7 @@ use actix_http::{Error, RequestHead};
 
 use crate::sender::{RequestSender, SendClientRequest};
 use crate::ClientConfig;
+use std::sync::Arc;
 
 /// `FrozenClientRequest` struct represents clonable client request.
 /// It could be used to send same request multiple times.
@@ -23,7 +24,7 @@ pub struct FrozenClientRequest {
     pub(crate) addr: Option<net::SocketAddr>,
     pub(crate) response_decompress: bool,
     pub(crate) timeout: Option<Duration>,
-    pub(crate) config: Rc<ClientConfig>,
+    pub(crate) config: Arc<ClientConfig>,
 }
 
 impl FrozenClientRequest {
