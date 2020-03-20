@@ -71,8 +71,8 @@ actix-threadpool = "0.3.1"
 actix-tls = "2.0.0-alpha.1"
 
 actix-web-codegen = "0.2.0"
-actix-http = "2.0.0-alpha.2"
-awc = { version = "2.0.0-alpha.1", default-features = false }
+actix-http = { git = "https://github.com/engylemure/actix-web", branch = "feature/client-send-and-sync" }
+awc = { git = "https://github.com/engylemure/actix-web", branch = "feature/client-send-and-sync", default-features = false }
 
 bytes = "0.5.3"
 derive_more = "0.99.2"
