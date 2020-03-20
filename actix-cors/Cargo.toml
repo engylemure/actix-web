@@ -17,7 +17,7 @@ name = "actix_cors"
 path = "src/lib.rs"
 
 [dependencies]
-actix-web = {version = "3.0.0-alpha.1"}
+actix-web = {git = "https://github.com/engylemure/actix-web", branch = "feature/client-send-and-sync"}
 actix-service = "1.0.5"
 derive_more = "0.99.2"
 futures = "0.3.1"
